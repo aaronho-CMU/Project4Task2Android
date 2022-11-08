@@ -111,7 +111,7 @@ public class CalculateFootprint {
                 con.setRequestMethod("POST");
 
                 //Code adapted from Lab8: https://github.com/CMU-Heinz-95702/lab7-Android
-                con.setRequestProperty("Content-Type", "binary/octet-stream");
+                con.setRequestProperty("Content-Type", "text/plain");
                 con.setRequestProperty("Accept", "text/plain");
 
                 //Code adapted from https://www.baeldung.com/httpurlconnection-post
