@@ -18,6 +18,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -99,16 +102,26 @@ public class CalculateFootprint {
         private String calculate(String params) {
 //            System.out.println("BackgroundTask.search");
             String endpoint = "http://10.0.2.2:8080//Project4Task2WebService-1.0-SNAPSHOT/calculateCarbonFootprint";
+//            endpoint = endpoint + "?params=" + params;
             String s = "";
             try
             {
                 URL url = new URL(endpoint);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+                con.setRequestMethod("POST");
 
                 //Code adapted from Lab8: https://github.com/CMU-Heinz-95702/lab7-Android
-                con.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
+                con.setRequestProperty("Content-Type", "binary/octet-stream");
                 con.setRequestProperty("Accept", "text/plain");
+
+                //Code adapted from https://www.baeldung.com/httpurlconnection-post
+                con.setDoOutput(true);
+                con.setDoInput(true);
+
+                //Writing params adapted from user itsraja: https://stackoverflow.com/questions/36647210/servlet-reading-inputstream-for-a-post-value-gives-null
+                PrintWriter pw = new PrintWriter(con.getOutputStream());
+                pw.println(params);
+                pw.flush();
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
