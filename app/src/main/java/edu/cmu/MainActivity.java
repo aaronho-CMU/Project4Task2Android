@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         //Instantiate an object to hold the parameters from the user
         RequestMessage jsonParams = null;
-        try {
-            String start = ((EditText) findViewById(R.id.startTrip)).getText().toString();
+        try {String start = ((EditText) findViewById(R.id.startTrip)).getText().toString();
             String end = ((EditText) findViewById(R.id.endTrip)).getText().toString();
 
             //Throw exception if start and end locations are not inputted
@@ -144,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             jsonParams.num_passengers = value;
                             break;
                     }
+
+                    //Increment index to get next edittextwidget
+                    index++;
                 }
             }
         }
@@ -177,24 +179,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Make table layout for response available
         TableLayout tb = findViewById(R.id.resp_table);
 
-        //code adapted from user Debanjan at https://stackoverflow.com/questions/50596820/android-constraint-layout-set-constraint-top-programmatically
-        tb.setVisibility(View.VISIBLE);
-
         ReceiveMessage apiRecieve = gson.fromJson(response, ReceiveMessage.class);
 
-        //Get the textviews to display response to user
-        TextView distance = (TextView) findViewById(R.id.distance_response);
-        TextView total_carbon_footprint_grams = (TextView) findViewById(R.id.carbon_grams_response);
-        TextView carbon_footprint_permile_grams = (TextView) findViewById(R.id.carbon_grams_permile_response);
-        TextView total_carbon_footprint_tons = (TextView) findViewById(R.id.carbon_tons_response);
-        TextView carbon_footprint_permile_tons = (TextView) findViewById(R.id.carbon_tons_permile_response);
+        if(apiRecieve.status == null) {
 
-        //Set textviews to data returned from web service
-        distance.setText(apiRecieve.distance);
-        total_carbon_footprint_grams.setText(apiRecieve.total_carbon_footprint_grams);
-        carbon_footprint_permile_grams.setText(apiRecieve.carbon_footprint_permile_grams);
-        total_carbon_footprint_tons.setText(apiRecieve.total_carbon_footprint_tons);
-        carbon_footprint_permile_tons.setText(apiRecieve.carbon_footprint_permile_tons);
+            //code adapted from user Debanjan at https://stackoverflow.com/questions/50596820/android-constraint-layout-set-constraint-top-programmatically
+            tb.setVisibility(View.VISIBLE);
+
+            //Get the textviews to display response to user
+            TextView distance = (TextView) findViewById(R.id.distance_response);
+            TextView total_carbon_footprint_grams = (TextView) findViewById(R.id.carbon_grams_response);
+            TextView carbon_footprint_permile_grams = (TextView) findViewById(R.id.carbon_grams_permile_response);
+            TextView total_carbon_footprint_tons = (TextView) findViewById(R.id.carbon_tons_response);
+            TextView carbon_footprint_permile_tons = (TextView) findViewById(R.id.carbon_tons_permile_response);
+
+            //Set textviews to data returned from web service
+            distance.setText(apiRecieve.distance);
+            total_carbon_footprint_grams.setText(apiRecieve.total_carbon_footprint_grams);
+            carbon_footprint_permile_grams.setText(apiRecieve.carbon_footprint_permile_grams);
+            total_carbon_footprint_tons.setText(apiRecieve.total_carbon_footprint_tons);
+            carbon_footprint_permile_tons.setText(apiRecieve.carbon_footprint_permile_tons);
+        }
+        else
+        {
+            //Displaying Toast with Hello Javatpoint message
+            //Adapted from https://www.javatpoint.com/android-toast-example
+            Toast.makeText(getApplicationContext(),"Error calculating carbon footprint with current inputs. Please try again with different inputs",Toast.LENGTH_SHORT).show();
+        }
 
     }
 

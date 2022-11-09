@@ -82,7 +82,6 @@ public class CalculateFootprint {
         //    the background thread.
         // Implement this method to suit your needs
         private void doInBackground() {
-            System.out.println("doInBackground");
             response = calculate(params);
 
         }
@@ -140,38 +139,5 @@ public class CalculateFootprint {
 
         }
 
-        /*
-         * Given a url that will request XML, return a Document with that XML, else null
-         */
-        private Document getRemoteXML(String url) {
-            System.out.println("getRemoteXML");
-            try {
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                InputSource is = new InputSource(url);
-                return db.parse(is);
-            } catch (Exception e) {
-                System.out.print("Yikes, hit the error: "+e);
-                return null;
-            }
-        }
-
-        /*
-         * Given a URL referring to an image, return a bitmap of that image
-         */
-        @RequiresApi(api = Build.VERSION_CODES.P)
-        private Bitmap getRemoteImage(final URL url) {
-            System.out.println("getRemoteImage");
-            try {
-                final URLConnection conn = url.openConnection();
-                conn.connect();
-                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                Bitmap bm = BitmapFactory.decodeStream(bis);
-                return bm;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
     }
 }
