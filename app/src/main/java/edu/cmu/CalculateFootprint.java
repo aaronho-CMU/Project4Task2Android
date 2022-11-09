@@ -30,19 +30,26 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class CalculateFootprint {
-    MainActivity ma = null;   // for callback
-    String params = null;       // RequestMessage object
-    String response = null;
+    MainActivity ma = null;     // for callback
+    String params = null;       // params to send to web service
+    String response = null;     //response from web service
 
-    // search( )
-    // Parameters:
-    // String searchTerm: the thing to search for on flickr
-    // Activity activity: the UI thread activity
-    // InterestingPicture ip: the callback method's class; here, it will be ip.pictureReady( )
+    /*
+     *  This method is called by the UI main thread. It will send the params for the API to calculate.
+     *  The ma object is a reference back to the UI main thread. We do this because we do not want to
+     *  have the UI be unresponsive while its getting a response from the web service.
+     *
+     * @param RequestMessage params, Activity activity, MainActivity ma
+     * @return none
+     */
     public void calculate(RequestMessage params, Activity activity, MainActivity ma) {
         this.ma = ma;
+
+        //Convert the params to string to send to web service
         Gson gson = new Gson();
         this.params = gson.toJson(params);
+
+        //Create new thread to execute response
         new BackgroundTask(activity).execute();
     }
 
@@ -82,7 +89,6 @@ public class CalculateFootprint {
         //    the background thread.
         // Implement this method to suit your needs
         private void doInBackground() {
-            System.out.println("doInBackground");
             response = calculate(params);
 
         }
@@ -100,29 +106,34 @@ public class CalculateFootprint {
          * Make a GET request to the web service to get the response from the API
          */
         private String calculate(String params) {
-//            System.out.println("BackgroundTask.search");
             String endpoint = "http://10.0.2.2:8080//Project4Task2WebService-1.0-SNAPSHOT/calculateCarbonFootprint";
-//            endpoint = endpoint + "?params=" + params;
+//            String endpoint = "https://warm-beach-45153.herokuapp.com/calculateCarbonFootprint";
+
             String s = "";
             try
             {
+                //Make POST request to web service
                 URL url = new URL(endpoint);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");
 
+                //We set content negotiation so that we know what we will send and will accept
                 //Code adapted from Lab8: https://github.com/CMU-Heinz-95702/lab7-Android
                 con.setRequestProperty("Content-Type", "text/plain");
                 con.setRequestProperty("Accept", "text/plain");
 
+                //We do this to setup our
                 //Code adapted from https://www.baeldung.com/httpurlconnection-post
-                con.setDoOutput(true);
-                con.setDoInput(true);
+//                con.setDoOutput(true);
+//                con.setDoInput(true);
 
-                //Writing params adapted from user itsraja: https://stackoverflow.com/questions/36647210/servlet-reading-inputstream-for-a-post-value-gives-null
+                //Writing params to API
+                // adapted from user itsraja: https://stackoverflow.com/questions/36647210/servlet-reading-inputstream-for-a-post-value-gives-null
                 PrintWriter pw = new PrintWriter(con.getOutputStream());
                 pw.println(params);
                 pw.flush();
 
+                //Get response from web service
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
 
@@ -133,45 +144,12 @@ public class CalculateFootprint {
             }
             catch(IOException e)
             {
-                e.printStackTrace();
+                s = "Unable to reach server";
             }
 
             return s;
 
         }
 
-        /*
-         * Given a url that will request XML, return a Document with that XML, else null
-         */
-        private Document getRemoteXML(String url) {
-            System.out.println("getRemoteXML");
-            try {
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                InputSource is = new InputSource(url);
-                return db.parse(is);
-            } catch (Exception e) {
-                System.out.print("Yikes, hit the error: "+e);
-                return null;
-            }
-        }
-
-        /*
-         * Given a URL referring to an image, return a bitmap of that image
-         */
-        @RequiresApi(api = Build.VERSION_CODES.P)
-        private Bitmap getRemoteImage(final URL url) {
-            System.out.println("getRemoteImage");
-            try {
-                final URLConnection conn = url.openConnection();
-                conn.connect();
-                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                Bitmap bm = BitmapFactory.decodeStream(bis);
-                return bm;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
     }
 }

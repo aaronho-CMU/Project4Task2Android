@@ -1,6 +1,8 @@
 package edu.cmu;
 
 public class ReceiveMessage {
+    String status;
+    String message;
     String distance;
     String total_carbon_footprint_grams;
     String carbon_footprint_permile_grams;

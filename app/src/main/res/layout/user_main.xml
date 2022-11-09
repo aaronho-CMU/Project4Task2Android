@@ -168,16 +168,16 @@ latitude and longitude pair (comma separated) or US Zip Code."
         app:layout_constraintTop_toBottomOf="@+id/vehicle_year" />
 
     <TableLayout
-        android:layout_width="355dp"
-        android:layout_height="319dp"
-        android:visibility="gone"
         android:id="@+id/resp_table"
+        android:layout_width="355dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.285"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calculate"
-        app:layout_constraintVertical_bias="0.064">
+        app:layout_constraintVertical_bias="0.195">
 
         <TableRow
             android:layout_width="match_parent"

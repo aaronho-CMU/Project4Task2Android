@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     //a list of transportation modes to
-    String[] modes = {"driving","cycling","e-bike","walking"};
+    String[] modes = {"driving", "cycling", "e-bike", "walking"};
 
     //This will be the main UI thread
     MainActivity current = this;
@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Set the content to the user_main xml sheet
         setContentView(R.layout.user_main);
 
         //this is for the callback for the submit button. After calculating the carbon footprint,
@@ -37,28 +39,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Assign transportation modes to spinner.
         //Adapted from: https://www.geeksforgeeks.org/spinner-in-android-using-java-with-example/
         Spinner mode_drop_down = findViewById(R.id.spinner_modes);
-        ArrayAdapter ad = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_item,modes);
+        ArrayAdapter ad = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_item, modes);
         mode_drop_down.setAdapter(ad);
         mode_drop_down.setOnItemSelectedListener(this);
 
         //Find the "submit" button, and add a listener to it
-        Button submitButton = (Button)findViewById(R.id.calculate);
+        Button submitButton = (Button) findViewById(R.id.calculate);
 
         // Add a listener to the send button
-        submitButton.setOnClickListener(new View.OnClickListener(){
+        submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View viewParam) {
                 //Extract the parameters from the user input
                 RequestMessage params = getUserParams();
 
+                //Exit out of click execution if the params is null.
+                //We do not want to send a request to the API if we encounter an
+                //error
+                if (params == null)
+                {
+                    return;
+                }
+
                 //Call the calculate method from the CalculateFootPrint method to start another thread and retrieve the response
                 CalculateFootprint cf = new CalculateFootprint();
-                cf.calculate(params,current, onClick); // Done asynchronously in another thread.  It calls cf.calculate() in this thread when complete.
+                cf.calculate(params, current, onClick); // Done asynchronously in another thread.  It calls cf.calculate() in this thread when complete.
             }
         });
     }
 
-    private RequestMessage getUserParams()
-    {
+    private RequestMessage getUserParams() {
         //Instantiate an object to hold the parameters from the user
         RequestMessage jsonParams = null;
         try {
@@ -66,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String end = ((EditText) findViewById(R.id.endTrip)).getText().toString();
 
             //Throw exception if start and end locations are not inputted
-            if((start.isEmpty() || start.equals("Start")) || end.isEmpty() || end.equals("End"))
-            {
-                throw new RequiredParamException("missing start");
+            if ((start.isEmpty() || start.equals("Start")) || end.isEmpty() || end.equals("End")) {
+                throw new RequiredParamException("Required start or end location is missing");
             }
 
             //Extract the transport mode
@@ -94,13 +102,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //If either make, model or year is inputted then all three should be there
                 if
                 (
-                        (!year.isEmpty() & (make.isEmpty() ||model.isEmpty())) ||
-                                (!make.isEmpty() & (year.isEmpty() ||model.isEmpty())) ||
-                                (!model.isEmpty() & (make.isEmpty() ||year.isEmpty()))
-                )
-                {
+                        (!year.isEmpty() & (make.isEmpty() || model.isEmpty())) ||
+                                (!make.isEmpty() & (year.isEmpty() || model.isEmpty())) ||
+                                (!model.isEmpty() & (make.isEmpty() || year.isEmpty()))
+                ) {
                     //Throw exception if one is missing
-                    throw new RequiredParamException("year,make,model");
+                    throw new RequiredParamException("Year, Make and Model are required inputs");
                 }
 
                 //For all the driving text boxes, get the user inputs and store them as requests
@@ -109,64 +116,90 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     String value;
 
                     //add the driving parameters accordingly to the request
-                    switch(index)
-                    {
+                    switch (index) {
+                        //Store Vehicle Make
                         case 0:
                             value = editText.getText().toString();
                             jsonParams.vehicle_make = value;
                             break;
+                        //Store Vehicle Model
                         case 1:
                             value = editText.getText().toString();
                             jsonParams.vehicle_model = value;
                             break;
+                        //Store Vehicle Year
                         case 2:
                             value = editText.getText().toString();
+
+                            //Test that vehicle year is integer if inputted
+                            try {
+                                if(!value.isEmpty()) {
+                                    Integer test = Integer.parseInt(value);
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                //Throw exception if not number
+                                throw new RequiredParamException("Year must be a number");
+                            }
+
                             jsonParams.vehicle_year = value;
                             break;
+                        //Store Vehicle Engine Size
                         case 3:
                             value = editText.getText().toString();
                             jsonParams.vehicle_engine_size = value;
                             break;
+                        //Store Vehicle Fuel Type
                         case 4:
                             value = editText.getText().toString();
                             jsonParams.vehicle_fuel_type = value;
                             break;
+                        //Store Vehicle Submodel
                         case 5:
                             value = editText.getText().toString();
                             jsonParams.vehicle_submodel = value;
                             break;
+                        //Store Vehicle Transmission type
                         case 6:
                             value = editText.getText().toString();
                             jsonParams.vehicle_transmission_type = value;
                             break;
+                        //Store number of passengers
                         case 7:
                             value = editText.getText().toString();
+
+                            //Test that num of passengers is integer
+                            try {
+                                if(!value.isEmpty()) {
+                                    Integer test = Integer.parseInt(value);
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                //Throw exception if not number
+                                throw new RequiredParamException("Number of passengers must be a number");
+                            }
+
                             jsonParams.num_passengers = value;
                             break;
                     }
+
+                    //Increment index to get next edittextwidget
+                    index++;
                 }
             }
-        }
-        catch (RequiredParamException ex)
-        {
 
-            //Display message if missing start or end locations
-            if (ex.getMessage().equals("missing start"))
-            {
-                //Displaying Toast with Hello Javatpoint message
-                //Adapted from https://www.javatpoint.com/android-toast-example
-                Toast.makeText(getApplicationContext(),"Required start or end location is missing",Toast.LENGTH_SHORT).show();
-            }
-            //Display message if missing year, make or model
-            else if (ex.getMessage().equals("year,make,model"))
-            {
-                //Displaying Toast with Hello Javatpoint message
-                //Adapted from https://www.javatpoint.com/android-toast-example
-                Toast.makeText(getApplicationContext(),"Year, Make and Model are required inputs",Toast.LENGTH_SHORT).show();
-            }
+            return jsonParams;
+        } catch (RequiredParamException ex) {
+
+            //Displaying Toast with message
+            //Adapted from https://www.javatpoint.com/android-toast-example
+            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_SHORT).show();
+
+            return null;
         }
 
-        return jsonParams;
     }
 
     /*
@@ -176,26 +209,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         //Make table layout for response available
         TableLayout tb = findViewById(R.id.resp_table);
+        try {
+            ReceiveMessage apiRecieve = gson.fromJson(response, ReceiveMessage.class);
 
-        //code adapted from user Debanjan at https://stackoverflow.com/questions/50596820/android-constraint-layout-set-constraint-top-programmatically
-        tb.setVisibility(View.VISIBLE);
+            if(apiRecieve.status == null) {
 
-        ReceiveMessage apiRecieve = gson.fromJson(response, ReceiveMessage.class);
+                //code adapted from user Debanjan at https://stackoverflow.com/questions/50596820/android-constraint-layout-set-constraint-top-programmatically
+                tb.setVisibility(View.VISIBLE);
 
-        //Get the textviews to display response to user
-        TextView distance = (TextView) findViewById(R.id.distance_response);
-        TextView total_carbon_footprint_grams = (TextView) findViewById(R.id.carbon_grams_response);
-        TextView carbon_footprint_permile_grams = (TextView) findViewById(R.id.carbon_grams_permile_response);
-        TextView total_carbon_footprint_tons = (TextView) findViewById(R.id.carbon_tons_response);
-        TextView carbon_footprint_permile_tons = (TextView) findViewById(R.id.carbon_tons_permile_response);
+                //Get the textviews to display response to user
+                TextView distance = (TextView) findViewById(R.id.distance_response);
+                TextView total_carbon_footprint_grams = (TextView) findViewById(R.id.carbon_grams_response);
+                TextView carbon_footprint_permile_grams = (TextView) findViewById(R.id.carbon_grams_permile_response);
+                TextView total_carbon_footprint_tons = (TextView) findViewById(R.id.carbon_tons_response);
+                TextView carbon_footprint_permile_tons = (TextView) findViewById(R.id.carbon_tons_permile_response);
 
-        //Set textviews to data returned from web service
-        distance.setText(apiRecieve.distance);
-        total_carbon_footprint_grams.setText(apiRecieve.total_carbon_footprint_grams);
-        carbon_footprint_permile_grams.setText(apiRecieve.carbon_footprint_permile_grams);
-        total_carbon_footprint_tons.setText(apiRecieve.total_carbon_footprint_tons);
-        carbon_footprint_permile_tons.setText(apiRecieve.carbon_footprint_permile_tons);
-
+                //Set textviews to data returned from web service
+                distance.setText(apiRecieve.distance);
+                total_carbon_footprint_grams.setText(apiRecieve.total_carbon_footprint_grams);
+                carbon_footprint_permile_grams.setText(apiRecieve.carbon_footprint_permile_grams);
+                total_carbon_footprint_tons.setText(apiRecieve.total_carbon_footprint_tons);
+                carbon_footprint_permile_tons.setText(apiRecieve.carbon_footprint_permile_tons);
+            }
+            else
+            {
+                //Displaying Toast with Hello Javatpoint message
+                //Adapted from https://www.javatpoint.com/android-toast-example
+                Toast.makeText(getApplicationContext(),"Error calculating carbon footprint with current inputs. Please try again with different inputs",Toast.LENGTH_SHORT).show();
+            }
+        }
+        catch (Exception ex)
+        {
+            //Displaying Toast with Hello Javatpoint message
+            //Adapted from https://www.javatpoint.com/android-toast-example
+            Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
