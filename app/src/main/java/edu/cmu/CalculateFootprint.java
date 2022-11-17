@@ -106,8 +106,7 @@ public class CalculateFootprint {
          * Make a GET request to the web service to get the response from the API
          */
         private String calculate(String params) {
-            String endpoint = "http://10.0.2.2:8080//Project4Task2WebService-1.0-SNAPSHOT/calculateCarbonFootprint";
-//            String endpoint = "https://warm-beach-45153.herokuapp.com/calculateCarbonFootprint";
+            String endpoint = "https://warm-beach-45153.herokuapp.com/calculateCarbonFootprint";
 
             String s = "";
             try
@@ -121,11 +120,6 @@ public class CalculateFootprint {
                 //Code adapted from Lab8: https://github.com/CMU-Heinz-95702/lab7-Android
                 con.setRequestProperty("Content-Type", "text/plain");
                 con.setRequestProperty("Accept", "text/plain");
-
-                //We do this to setup our
-                //Code adapted from https://www.baeldung.com/httpurlconnection-post
-//                con.setDoOutput(true);
-//                con.setDoInput(true);
 
                 //Writing params to API
                 // adapted from user itsraja: https://stackoverflow.com/questions/36647210/servlet-reading-inputstream-for-a-post-value-gives-null
