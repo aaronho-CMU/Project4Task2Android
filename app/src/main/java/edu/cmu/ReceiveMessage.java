@@ -1,3 +1,11 @@
+/**
+ * Author: Aaron Ho (aaronho), Noopur Latkar (nlatkar)
+ * Last Modified: Nov 18, 2022
+ *
+ * This class declares the parameters associated with the response
+ * message received from the web server after calculation of carbon footprint
+ */
+
 package edu.cmu;
 
 public class ReceiveMessage {
@@ -9,6 +17,7 @@ public class ReceiveMessage {
     String total_carbon_footprint_tons;
     String carbon_footprint_permile_tons;
 
+    // constructor
     public ReceiveMessage(String distance, String total_carbon_footprint_grams, String carbon_footprint_permile_grams, String total_carbon_footprint_tons, String carbon_footprint_permile_tons) {
         this.distance = distance;
         this.total_carbon_footprint_grams = total_carbon_footprint_grams;

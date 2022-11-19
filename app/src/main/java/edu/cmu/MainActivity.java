@@ -1,3 +1,12 @@
+/**
+ * Author: Aaron Ho (aaronho), Noopur Latkar (nlatkar)
+ * Last Modified: Nov 18, 2022
+ *
+ * This program displays the main page of the mobile
+ * application to accept user inputs and displays results on
+ * calculation of carbon footprint
+ */
+
 package edu.cmu;
 
 import android.os.Bundle;

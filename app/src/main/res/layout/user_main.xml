@@ -5,22 +5,37 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@drawable/carbon_footprint">
 
     <TextView
         android:id="@+id/textView"
+        android:layout_width="415dp"
+        android:layout_height="46dp"
+        android:gravity="center"
+        android:text="Carbon Footprint"
+        android:textColor="#7A876B"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the Klimaat app. Here you can find your carbon footprint for a trip in miles. Begin by adding a
+        android:layout_marginTop="34dp"
+        android:text="Here you can find your carbon footprint for a trip in miles. Begin by adding a
 latitude and longitude pair (comma separated) or US Zip Code."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <EditText
         android:id="@+id/startTrip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="Start"
         android:inputType="textPersonName"
@@ -29,22 +44,22 @@ latitude and longitude pair (comma separated) or US Zip Code."
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <EditText
-        android:id="@+id/endTrip"
+    <Button
+        android:id="@+id/calculate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="End"
-        android:inputType="textPersonName"
+        android:layout_marginTop="8dp"
+        android:text="Calculate"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startTrip" />
+        app:layout_constraintTop_toBottomOf="@+id/num_passengers" />
 
     <Spinner
         android:id="@+id/spinner_modes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,17 +72,22 @@ latitude and longitude pair (comma separated) or US Zip Code."
         android:text="Select a transportation mode"
         app:layout_constraintBottom_toTopOf="@+id/spinner_modes"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/endTrip" />
 
-    <Button
-        android:id="@+id/calculate"
+    <EditText
+        android:id="@+id/endTrip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calculate"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:hint="End"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/num_passengers" />
+        app:layout_constraintTop_toBottomOf="@+id/startTrip" />
 
     <EditText
         android:id="@+id/vehicle_make"

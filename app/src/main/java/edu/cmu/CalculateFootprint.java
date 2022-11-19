@@ -1,3 +1,11 @@
+/**
+ * Author: Aaron Ho (aaronho), Noopur Latkar (nlatkar)
+ * Last Modified: Nov 18, 2022
+ *
+ * This program makes a GET request to the web service to
+ * get the response from the API
+ */
+
 package edu.cmu;
 
 import android.app.Activity;
@@ -53,7 +61,10 @@ public class CalculateFootprint {
         new BackgroundTask(activity).execute();
     }
 
-
+    /*
+    This class is invoked so that long-running operations don't freeze the UI,
+    and run in the background
+     */
 
     private class BackgroundTask {
 
@@ -136,6 +147,7 @@ public class CalculateFootprint {
                     s = inputLine;
                 }
             }
+            // IO exception
             catch(IOException e)
             {
                 s = "Unable to reach server";
